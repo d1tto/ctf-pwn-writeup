@@ -16,7 +16,7 @@ Use house of orange to achieve free effects
 
    when the old top chunk is placed in large bin, the large bin is empty ,so the chunk's fd_nextsize and bk_nextsize will point to itself. Then using  the function see can leak not only libc base address but also heap address.
 
-4. using unsorted bin attack to modify _IO_list_all to (&unsortedbin - 0x10) , then fake _IO_FILE structure and vtable. 
+4.using unsorted bin attack to modify _IO_list_all to (&unsortedbin - 0x10) , then fake _IO_FILE structure and vtable. 
    By using overflow to modify the old top chunk's size to 0x60, because the offset of chain in _IO_FILE strcture is 0x68 .
    when dealing with the unsorted bin , the old top chunk will be placed in smallbin and the index of bin is 6. 
    the unsorted bin index is 1 ,so the chain is equal to smallbin[6]'s bk，which is mean to the next _IO_FILE strcture is the old top chunk.   
