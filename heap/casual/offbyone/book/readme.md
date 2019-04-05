@@ -72,7 +72,7 @@ signed __int64 __fastcall read_offbyone(_BYTE *a1, int a2)
   return 0LL;
 }
 ```
-### 输入字符串后会自动在字符串的末尾加上\x00来截断字符串。
+**输入字符串后会自动在字符串的末尾加上\x00来截断字符串。**
 
 程序开始时输入author名字：
 ```
@@ -167,7 +167,7 @@ pwndbg> x/8gx (0x555555554000+0x202040)
   bk_nextsize = 0x100
 }
 ```
-指针修改为0x0000555555758180正好落入description chunk中，那么就可以伪造book chunk了。
+指针修改为0x0000555555758100正好落入description chunk中，那么就可以伪造book chunk了。
 
 **如何泄露libc地址：**
 申请一个很大的chunk，那么ptmalloc就会使用mmap来给他分配，mmap分配的内存和libc的基址的偏移是固定的，那么泄露了mmap分配的地址即可得到libc基址。
