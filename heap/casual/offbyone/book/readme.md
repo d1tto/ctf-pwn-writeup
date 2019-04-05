@@ -1,4 +1,7 @@
-创建的结构体如下：
+offbyone的溢出。
+my_read函数中有NULL溢出：
+!(https://github.com/Dittozzz/CTF-pwn-writeup/blob/master/%E5%9B%BE%E7%89%87/CBIY3)4NR8PG%5BK%7DKQ%60%60DJEB.png?raw=true)
+create函数创建的结构体如下：
 ```
     struct book_structure
     {
