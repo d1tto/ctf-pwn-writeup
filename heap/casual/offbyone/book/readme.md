@@ -1,7 +1,7 @@
 最近在学习堆中offbyone的利用，写下调试过程。
 之前学习栈的时候，大部分时候都是靠脑子计算。学习了house of orange，offbyone和单个gets拿shell后才知道调试的重要性，写exp的时候只能写一点，gdb挂上去调试调试，只有精准布置内存数据，才能成功。
 
-**利用：offbyone溢出。**
+### 利用：offbyone溢出。
 程序开启了以下保护：
 ```
 [*] '/mnt/hgfs/Desktop/offbyone/book/b00ks'
@@ -72,7 +72,7 @@ signed __int64 __fastcall read_offbyone(_BYTE *a1, int a2)
   return 0LL;
 }
 ```
-**输入字符串后会自动在字符串的末尾加上\x00来截断字符串。**
+### 输入字符串后会自动在字符串的末尾加上\x00来截断字符串。
 
 程序开始时输入author名字：
 ```
@@ -112,7 +112,7 @@ pwndbg> x/8gx (0x555555554000+0x202040)
 ```
 则调用print函数，可以造成泄露，将book1的地址打印出来。
 
-**如何造成任意读写：**
+### 如何造成任意读写：
 可以再次利用my_read函数中的offbyone漏洞，将book_struct中的低位第一个字节覆盖为NULL，那么保存的book1的地址就缩小，使得这个地址落在可控范围内。这是因为chunk布局如下：
 ```
     ----low addr ----
