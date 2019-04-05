@@ -8,7 +8,7 @@
     NX:       NX enabled
     PIE:      PIE enabled
 ```
-由于开启了PIE，不好调试。但是本地可以关闭ASLR,那么程序加载的基址是固定的，加上IDA中的偏移即可下断点。加载的基址可以通过查看/proc/`pidof xxx`/maps得到：
+由于开启了PIE，不好调试。但是本地可以关闭ASLR,那么程序加载的基址是固定的，加上IDA中的偏移即可下断点。加载的基址可以通过查看/proc/xxx/maps得到：
 ```
 555555554000-555555556000 r-xp 00000000 00:32 26189                      /mnt/hgfs/Desktop/offbyone/book/b00ks
 555555755000-555555756000 r--p 00001000 00:32 26189                      /mnt/hgfs/Desktop/offbyone/book/b00ks
