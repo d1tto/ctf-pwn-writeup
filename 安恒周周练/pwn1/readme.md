@@ -1,0 +1,2 @@
+写shellcode的题，能写的shellcode的长度为20字节，但是能找到的最短的shellcode是21字节。
+在执行shellcode之前看看寄存器的状态，查看是否可以省去一些指令即可。
