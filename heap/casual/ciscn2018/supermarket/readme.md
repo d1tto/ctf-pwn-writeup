@@ -24,6 +24,16 @@ chunk_info      struc ; (sizeof=0x1C, mappedto_5)
 ```
 其中desc_ptr指向description_chunk.
 
+程序基本没开啥保护：
+```
+[*] '/mnt/hgfs/Desktop/supermarket/supermarket'
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+```
+
 **利用：**
 1. 可以输入比原来description_size更大的size，那么realloc就会将原本的description free掉，再申请一个大的chunk来存放description。虽然free掉了，但是指针没清除，相当于构成了UAF。
 2. 再申请一个commodity，那么他的chunk_info就会得到原先free掉的description_chunk,这时chunk_info的内容是可控的，可以修改chunk_info里的desc_ptr为free_got。
