@@ -1,0 +1,3 @@
+类似 pwnable.tw的De-ASLR的手法，利用加法gadget.
+
+不会网络编程写反向shellcode，学习了一波
