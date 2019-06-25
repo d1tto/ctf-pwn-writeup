@@ -28,6 +28,8 @@
     puts("only admin can use");
   }
 ```
+add函数有offbyone漏洞，且溢出字节可控。
+'''
 unsigned __int64 add()
 {
   int v1; // [rsp+Ch] [rbp-14h]
@@ -46,7 +48,7 @@ unsigned __int64 add()
   printf("gift: %llx\n", chunk_ptr[v1]);
   puts("content:");
   read(0, chunk_ptr[v1], 0x29uLL);
-  ```
-  add函数有offbyone漏洞，且溢出字节可控。
+  '''
+
   
   利用思路是
