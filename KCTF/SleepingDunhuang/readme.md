@@ -29,7 +29,7 @@
   }
 ```
 add函数有offbyone漏洞，且溢出字节可控。
-'''
+```
 unsigned __int64 add()
 {
   int v1; // [rsp+Ch] [rbp-14h]
@@ -48,7 +48,17 @@ unsigned __int64 add()
   printf("gift: %llx\n", chunk_ptr[v1]);
   puts("content:");
   read(0, chunk_ptr[v1], 0x29uLL);
-  '''
-
+  ```
+  由于有ptr的限制，不能直接把chunk malloc到bss段。
+  利用思路是 先利用 tcache poison，将chunk申请到ptr指向的chunk，然后在该chunk上使用unlink，将ptr的内容修改为 &ptr-24 . 这样就可以把 chunk 申请到bss段了。
   
-  利用思路是
+  tcache poison时，有个trcik是：
+  ```
+delete(13)
+delete(19)
+delete(11)
+delete(5)
+add(5,p64(fuck_chunk_addr))
+  ```
+  这里的 11和5 是相同的chunk，这样修改fd后，申请到chunk后，tcache_count是0，而不是 -1 ,这样就可以继续使用tcache poison.
+  
