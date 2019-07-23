@@ -32,7 +32,7 @@ unsigned int sub_CDB()
 当v3等于0的时候没有对v2进行赋值，由于v2并没有进行初始化，那么v2的值将会是栈中的垃圾数据.后续调用v2的时候就会出现问题.
 
 #### 泄露信息:
-```
+```c
 int __cdecl take_or_read_note(int a1)
 {
   int result; // eax
@@ -64,16 +64,16 @@ int __cdecl take_or_read_note(int a1)
 
 向Sign的栈帧的v2的位置写入system的地址，并布置好参数即可getshell.
 问题是Sign函数的栈帧很低:
-![]()
+![](https://github.com/Dittozzz/ctf-pwn-writeup/blob/master/BUUOJ/rec_33c3_2016/picture/4.png?raw=true)
 其他函数的栈帧和他的距离太远了.
 
 发现在polish函数中求和操作可以降低ESP:
-![]()
+![](https://github.com/Dittozzz/ctf-pwn-writeup/blob/master/BUUOJ/rec_33c3_2016/picture/1.png?raw=true)
 每次调用一次该函数，ESP会降低 8 
 
 
 求和操作时的ESP指向：
-![]()
+![](https://github.com/Dittozzz/ctf-pwn-writeup/blob/master/BUUOJ/rec_33c3_2016/picture/2.png?raw=true)
 在sign中栈帧如下，则可以计算出大致的偏移:
-![]()
+![](https://github.com/Dittozzz/ctf-pwn-writeup/blob/master/BUUOJ/rec_33c3_2016/picture/3.png?raw=true)
 
