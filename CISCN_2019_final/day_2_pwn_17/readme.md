@@ -1,1 +1,2 @@
-
+类型转换绕过check.
+然后利用UAF和partial overwrite申请到存储字符串的chunk，修改字符串，然后写入shellcode即可
